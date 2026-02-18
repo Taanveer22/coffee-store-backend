@@ -10,7 +10,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // 02
 const app = express();
@@ -53,6 +53,13 @@ async function run() {
       const createCoffee = req.body;
       // console.log(createCoffee);
       const result = await coffeesCollection.insertOne(createCoffee);
+      res.send(result);
+    });
+
+    //=================== delete operation=============================
+    app.delete("/deleteCoffees/:id", async (req, res) => {
+      const query = { _id: new ObjectId(req.params.id) };
+      const result = await coffeesCollection.deleteOne(query);
       res.send(result);
     });
 
