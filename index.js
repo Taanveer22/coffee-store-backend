@@ -6,7 +6,6 @@
 // 5. Routes
 // 6. Server Startup (app.listen)
 // ===========================================================
-// dWZhptSbYfEsnwot
 // 01
 require("dotenv").config();
 const express = require("express");
@@ -36,8 +35,19 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    const database = client.db("sample_coffees_db");
+    const coffeesCollection = database.collection("coffees-coll");
+
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    // create coffees
+    app.post("/createcoffees", async (req, res) => {
+      const createCoffee = req.body;
+      // console.log(createCoffee);
+      const result = await coffeesCollection.insertOne(createCoffee);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
