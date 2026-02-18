@@ -41,7 +41,14 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    // create coffees
+    //=================== read operation=============================
+    app.get("/readCoffees", async (req, res) => {
+      const cursor = coffeesCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    //=================== create operation=============================
     app.post("/createcoffees", async (req, res) => {
       const createCoffee = req.body;
       // console.log(createCoffee);
