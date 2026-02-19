@@ -6,6 +6,8 @@
 // 5. Routes
 // 6. Server Startup (app.listen)
 // ===========================================================
+
+
 // 01
 require("dotenv").config();
 const express = require("express");
@@ -41,18 +43,44 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    //=================== read operation=============================
+    //===== read operation all coffees(use in routes loader) =====
     app.get("/readCoffees", async (req, res) => {
       const cursor = coffeesCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
 
+    //======= read operation one coffee(use in routes loader) =========
+    app.get("/readCoffees/:id", async (req, res) => {
+      const query = { _id: new ObjectId(req.params.id) };
+      const result = await coffeesCollection.findOne(query);
+      res.send(result);
+    });
+
     //=================== create operation=============================
-    app.post("/createcoffees", async (req, res) => {
+    app.post("/createCoffees", async (req, res) => {
       const createCoffee = req.body;
       // console.log(createCoffee);
       const result = await coffeesCollection.insertOne(createCoffee);
+      res.send(result);
+    });
+
+    //=================== update operation=============================
+    app.put("/updateCoffees/:id", async (req, res) => {
+      const query = { _id: new ObjectId(req.params.id) };
+      const update = {
+        $set: {
+          name: req.body.name,
+          quantity: req.body.quantity,
+          supplier: req.body.supplier,
+          taste: req.body.taste,
+          category: req.body.category,
+          details: req.body.details,
+          photo: req.body.photo,
+        },
+      };
+      const options = { upsert: true };
+      const result = await coffeesCollection.updateOne(query, update, options);
       res.send(result);
     });
 
