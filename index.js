@@ -7,7 +7,6 @@
 // 6. Server Startup (app.listen)
 // ===========================================================
 
-
 // 01
 require("dotenv").config();
 const express = require("express");
@@ -39,6 +38,7 @@ async function run() {
   try {
     const database = client.db("sample_coffees_db");
     const coffeesCollection = database.collection("coffees-coll");
+    const usersCollection = database.collection("users-coll");
 
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
@@ -88,6 +88,14 @@ async function run() {
     app.delete("/deleteCoffees/:id", async (req, res) => {
       const query = { _id: new ObjectId(req.params.id) };
       const result = await coffeesCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // post method for users ===================
+    app.post("/users", async (req, res) => {
+      const createUser = req.body;
+      // console.log(createUser);
+      const result = await usersCollection.insertOne(createUser);
       res.send(result);
     });
 
