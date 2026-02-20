@@ -43,6 +43,10 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    // =============================================
+    // ===== coffees route ===========================
+    // =============================================
+
     //===== read operation all coffees(use in routes loader) =====
     app.get("/readCoffees", async (req, res) => {
       const cursor = coffeesCollection.find();
@@ -91,7 +95,18 @@ async function run() {
       res.send(result);
     });
 
-    // post method for users ===================
+    // =============================================
+    // ===== users route ===========================
+    // =============================================
+
+    // ================get method for users ===================
+    app.get("/users", async (req, res) => {
+      const getUser = usersCollection.find();
+      const result = await getUser.toArray();
+      res.send(result);
+    });
+
+     // ================post method for users ===================
     app.post("/users", async (req, res) => {
       const createUser = req.body;
       // console.log(createUser);
