@@ -99,18 +99,24 @@ async function run() {
     // ===== users route ===========================
     // =============================================
 
-    // ================get method for users ===================
+    // ================read operation for users ===================
     app.get("/users", async (req, res) => {
-      const getUser = usersCollection.find();
-      const result = await getUser.toArray();
+      const readUser = usersCollection.find();
+      const result = await readUser.toArray();
       res.send(result);
     });
 
-     // ================post method for users ===================
+    // ================create operation for users ===================
     app.post("/users", async (req, res) => {
       const createUser = req.body;
-      // console.log(createUser);
       const result = await usersCollection.insertOne(createUser);
+      res.send(result);
+    });
+
+    // ================delete operation for users ===================
+    app.delete("/users/:id", async (req, res) => {
+      const deleteUser = { _id: new ObjectId(req.params.id) };
+      const result = await usersCollection.deleteOne(deleteUser);
       res.send(result);
     });
 
