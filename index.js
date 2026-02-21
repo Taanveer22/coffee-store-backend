@@ -22,7 +22,6 @@ app.use(cors());
 app.use(express.json());
 
 // 04
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.89rnkti.mongodb.net/?appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -44,7 +43,7 @@ async function run() {
     await client.connect();
 
     // =============================================
-    // ===== coffees route ===========================
+    // ===== coffees api route ===========================
     // =============================================
 
     //===== read operation all coffees(use in routes loader) =====
@@ -96,25 +95,37 @@ async function run() {
     });
 
     // =============================================
-    // ===== users route ===========================
+    // ===== users api route ===========================
     // =============================================
 
     // ================read operation for users ===================
-    app.get("/users", async (req, res) => {
+    app.get("/readUsers", async (req, res) => {
       const readUser = usersCollection.find();
       const result = await readUser.toArray();
       res.send(result);
     });
 
     // ================create operation for users ===================
-    app.post("/users", async (req, res) => {
+    app.post("/createUsers", async (req, res) => {
       const createUser = req.body;
       const result = await usersCollection.insertOne(createUser);
       res.send(result);
     });
 
+    // ================update operation for users ===================
+    app.patch("/updateUsers/:email", async (req, res) => {
+      const updateUser = { email: req.params.email };
+      const updateDoc = {
+        $set: {
+          lastSignInTime: req.body?.lastSignInTime,
+        },
+      };
+      const result = await usersCollection.updateOne(updateUser, updateDoc);
+      res.send(result);
+    });
+
     // ================delete operation for users ===================
-    app.delete("/users/:id", async (req, res) => {
+    app.delete("/deleteUsers/:id", async (req, res) => {
       const deleteUser = { _id: new ObjectId(req.params.id) };
       const result = await usersCollection.deleteOne(deleteUser);
       res.send(result);
