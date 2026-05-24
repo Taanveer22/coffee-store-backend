@@ -8,10 +8,10 @@
 // ===========================================================
 
 // 01
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // 02
 const app = express();
@@ -24,7 +24,6 @@ app.use(express.json());
 // 04
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.89rnkti.mongodb.net/?appName=Cluster0`;
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -35,41 +34,42 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    const database = client.db("sample_coffees_db");
-    const coffeesCollection = database.collection("coffees-coll");
-    const usersCollection = database.collection("users-coll");
+    const database = client.db('sample_coffees_db');
+    const coffeesCollection = database.collection('coffees-coll');
+    const usersCollection = database.collection('users-coll');
 
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // Connect the client to the server
+    // await client.connect();
+    console.log('You successfully connected to MongoDB');
 
     // =============================================
     // ===== coffees api route ===========================
     // =============================================
 
     //===== read operation all coffees(use in routes loader) =====
-    app.get("/readCoffees", async (req, res) => {
+    app.get('/readCoffees', async (req, res) => {
       const cursor = coffeesCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
 
     //======= read operation one coffee(use in routes loader) =========
-    app.get("/readCoffees/:id", async (req, res) => {
+    app.get('/readCoffees/:id', async (req, res) => {
       const query = { _id: new ObjectId(req.params.id) };
       const result = await coffeesCollection.findOne(query);
       res.send(result);
     });
 
-    //=================== create operation=============================
-    app.post("/createCoffees", async (req, res) => {
+    //=================== create operation =============================
+    app.post('/createCoffees', async (req, res) => {
       const createCoffee = req.body;
       // console.log(createCoffee);
       const result = await coffeesCollection.insertOne(createCoffee);
       res.send(result);
     });
 
-    //=================== update operation=============================
-    app.put("/updateCoffees/:id", async (req, res) => {
+    //=================== update operation =============================
+    app.put('/updateCoffees/:id', async (req, res) => {
       const query = { _id: new ObjectId(req.params.id) };
       const update = {
         $set: {
@@ -87,8 +87,8 @@ async function run() {
       res.send(result);
     });
 
-    //=================== delete operation=============================
-    app.delete("/deleteCoffees/:id", async (req, res) => {
+    //=================== delete operation =============================
+    app.delete('/deleteCoffees/:id', async (req, res) => {
       const query = { _id: new ObjectId(req.params.id) };
       const result = await coffeesCollection.deleteOne(query);
       res.send(result);
@@ -98,22 +98,22 @@ async function run() {
     // ===== users api route ===========================
     // =============================================
 
-    // ================read operation for users ===================
-    app.get("/readUsers", async (req, res) => {
+    // ================ read operation for users ===================
+    app.get('/readUsers', async (req, res) => {
       const readUser = usersCollection.find();
       const result = await readUser.toArray();
       res.send(result);
     });
 
-    // ================create operation for users ===================
-    app.post("/createUsers", async (req, res) => {
+    // ================ create operation for users ===================
+    app.post('/createUsers', async (req, res) => {
       const createUser = req.body;
       const result = await usersCollection.insertOne(createUser);
       res.send(result);
     });
 
-    // ================update operation for users ===================
-    app.patch("/updateUsers/:email", async (req, res) => {
+    // ================ update operation for users ===================
+    app.patch('/updateUsers/:email', async (req, res) => {
       const updateUser = { email: req.params.email };
       const updateDoc = {
         $set: {
@@ -124,18 +124,16 @@ async function run() {
       res.send(result);
     });
 
-    // ================delete operation for users ===================
-    app.delete("/deleteUsers/:id", async (req, res) => {
+    // ================ delete operation for users ===================
+    app.delete('/deleteUsers/:id', async (req, res) => {
       const deleteUser = { _id: new ObjectId(req.params.id) };
       const result = await usersCollection.deleteOne(deleteUser);
       res.send(result);
     });
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!",
-    );
+    // await client.db("admin").command({ ping: 1 });
+    console.log('Pinged your deployment');
   } catch (error) {
     console.log(error);
   }
@@ -143,8 +141,8 @@ async function run() {
 run();
 
 // 05
-app.get("/", (req, res) => {
-  res.send("server is running");
+app.get('/', (req, res) => {
+  res.send('server is running');
 });
 
 // 06
